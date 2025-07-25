@@ -1,0 +1,925 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unbound3D - Print to Create</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        body {
+            font-family: 'Montserrat Bold', sans-serif;
+        }
+        
+        .animated-bg {
+            background: linear-gradient(-45deg, #000000,rgb(19, 18, 18),rgb(20, 20, 20), #0a0a0a);
+            background-size: 400% 400%;
+            animation: gradientShift 15s ease infinite;
+        }
+        
+        @keyframes gradientShift {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        .particle-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            background:  #3b82f6 ;
+            border-radius: 50%;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(180deg); }
+        }
+        
+        .feature-card {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover {
+            border-color: rgba(59, 130, 246, 0.5);
+            transform: translateY(-5px);
+        }
+        
+        .product-card {
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+            transition: all 0.3s ease;
+        }
+        
+        .product-card:hover {
+            border-color: rgba(59, 130, 246, 0.5);
+            transform: translateY(-5px);
+        }
+        
+        .nav-link:hover {
+            color: #3b82f6;
+            transition: color 0.3s ease;
+        }
+        
+        .hero-text {
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.8);
+        }
+        
+        .color-dot {
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: inline-block;
+            margin: 2px;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .stats-number {
+            font-size: 3rem;
+            font-weight: 800;
+            line-height: 1;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        
+        .section-subtitle {
+            font-size: 1.125rem;
+            text-align: center;
+            color: #9ca3af;
+            margin-bottom: 3rem;
+        }
+        
+        .brand-3d {
+            color: #3b82f6;
+        }
+        
+        .smooth-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .professional-btn {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid #3b82f6;
+            border-left: 4px solid #3b82f6;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        
+        .professional-btn:hover {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+        }
+        
+        .professional-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .input-field, .select-field {
+            background: rgba(31, 41, 55, 0.8);
+            border: 1px solid rgba(75, 85, 99, 0.5);
+            transition: all 0.3s ease;
+        }
+        
+        .input-field:focus, .select-field:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+        
+        .admin-access {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1000;
+        }
+        
+        .admin-btn {
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            border: 1px solid #dc2626;
+            border-left: 4px solid #dc2626;
+            color: white;
+            padding: 8px 16px;
+            border-radius: 6px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        
+        .admin-btn:hover {
+            background: linear-gradient(135deg, #dc2626 0%, #7f1d1d 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(220, 38, 38, 0.3);
+        }
+    </style>
+</head>
+<body class="animated-bg text-white min-h-screen">
+    <!-- Animated Particle Background -->
+    <div class="particle-bg" id="particleContainer"></div>
+    
+    <!-- Admin Access Button -->
+    <div class="admin-access">
+        <a href="/admin/signin" class="admin-btn">
+            <i class="fas fa-user-shield"></i>
+            Admin Access
+        </a>
+    </div>
+    
+    <!-- Header -->
+    <header class="fixed z-50 px-4 py-6 w-full top-0 bg-black bg-opacity-50 backdrop-blur-md shadow-md">
+        <nav class="max-w-7xl mx-auto flex items-center justify-between">
+            <!-- Logo: Remove any icon, keep only brand name -->
+            <div class="flex items-center space-x-2">
+                <a href="/" class="text-2xl font-bold" style="text-decoration: none;">
+                    Unbound<span class="brand-3d">3D</span>
+                </a>
+            </div>
+            
+            <!-- Navigation Links -->
+            <div class="hidden md:flex items-center space-x-8">
+                <a href="#home" class="nav-link font-medium smooth-transition">Home</a>
+                <a href="#products" class="nav-link font-medium smooth-transition">Products</a>
+                <a href="#solutions" class="nav-link font-medium smooth-transition">Solutions</a>
+                <a href="#why-unbound3d" class="nav-link font-medium smooth-transition">Why Unbound<span class="brand-3d">3D</span>?</a>
+                <a href="#about" class="nav-link font-medium smooth-transition">About</a>
+                <a href="#contact" class="nav-link font-medium smooth-transition">Contact</a>
+            </div>
+            
+            <!-- Right Side Controls -->
+            <div class="flex items-center space-x-4">
+                <a href="/signin" class="professional-btn">
+                    <i class="fas fa-rocket"></i>
+                    Your Virtual Printer
+                </a>
+                
+                <!-- Mobile Menu Button -->
+                <button class="md:hidden p-2 rounded-lg hover:bg-gray-900 smooth-transition" onclick="toggleMobileMenu()">
+                    <i class="fas fa-bars text-lg"></i>
+                </button>
+            </div>
+        </nav>
+        
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="md:hidden hidden mt-4 bg-black bg-opacity-90 rounded-lg p-4 border border-gray-800 smooth-transition">
+            <a href="#home" class="block py-2 nav-link smooth-transition">Home</a>
+            <a href="#products" class="block py-2 nav-link smooth-transition">Products</a>
+            <a href="#solutions" class="block py-2 nav-link smooth-transition">Solutions</a>
+            <a href="#why-unbound3d" class="block py-2 nav-link smooth-transition">Why Unbound<span class="brand-3d">3D</span>?</a>
+            <a href="#about" class="block py-2 nav-link smooth-transition">About</a>
+            <a href="#contact" class="block py-2 nav-link smooth-transition">Contact</a>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section id="home" class="relative z-10 px-4 py-32 mt-20">
+        <div class="max-w-7xl mx-auto text-center">
+            <!-- Hero Section: Remove any icon, keep only brand name -->
+            <h1 class="hero-text mb-8">
+                <div class="text-6xl md:text-8xl font-bold mb-4">Unbound<span class="brand-3d">3D</span></div>
+                <div class="text-4xl md:text-5xl font-semibold text-white"><span class="brand-3d">Print</span> To Create</div>
+            </h1>
+            <p class="text-xl md:text-2xl mb-12 text-gray-300 max-w-4xl mx-auto">
+                Own Your Virtual 3D Printer to unlock a remarkable experience for Every order with Real-time Tracking.
+            </p>
+            <div class="flex flex-col sm:flex-row gap-6 justify-center items-center">
+                <a href="/signin" class="professional-btn text-lg min-w-[200px]">
+                    <i class="fas fa-rocket"></i>
+                    Get Started →
+                </a>
+                <a href="#products" class="professional-btn text-lg min-w-[200px]">
+                    <i class="fas fa-cube"></i>
+                    Explore Products
+                </a>
+            </div>
+            <!-- Trusted by Section 
+            <div class="mt-10 flex flex-col items-center justify-center">
+                <span class="text-gray-400 text-lg mb-2">Proudly Trusted by</span>
+                <img src="/static/uploads/indian-military-logo.png" alt="Indian Military Logo" style="height:64px; width:auto; object-fit:contain; margin-bottom:8px;" />
+                <span class="text-white font-semibold text-xl">Indian Army</span>
+            </div> -->
+        </div>
+    </section>
+    
+    <!-- Why Choose Unbound3D Section -->
+    <section id="why-unbound3d" class="relative z-10 px-4 py-20">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="section-title">Why Choose Unbound<span class="brand-3d">3D</span>?</h2>
+                <p class="section-subtitle">We're not just another 3D printing service. We're your partner in bringing ideas to life.</p>
+            </div>
+            
+            <!-- Statistics -->
+            <div class="grid md:grid-cols-4 gap-8 mb-16">
+                <div class="text-center">
+                    <div class="stats-number text-white mb-2">100+</div>
+                    <p class="text-gray-300 font-medium">Projects Completed</p>
+                </div>
+                <div class="text-center">
+                    <div class="stats-number text-white mb-2">50+</div>
+                    <p class="text-gray-300 font-medium">Happy Clients</p>
+                </div>
+                <div class="text-center">
+                    <div class="stats-number text-white mb-2">10+</div>
+                    <p class="text-gray-300 font-medium">Print Farms</p>
+                </div>
+                <div class="text-center">
+                    <div class="stats-number text-white mb-2">99.9%</div>
+                    <p class="text-gray-300 font-medium">Uptime Guarantee</p>
+                </div>
+            </div>
+            
+            <!-- Features Grid -->
+            <div class="grid md:grid-cols-3 gap-8">
+                <div class="feature-card p-8 rounded-lg">
+                    <div class="w-16 h-16 bg-blue-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-shield-alt text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Secure & Reliable</h3>
+                    <p class="text-gray-300">Enterprise-grade security with 99.9% uptime guarantee</p>
+                </div>
+                
+                <div class="feature-card p-8 rounded-lg">
+                    <div class="w-16 h-16 bg-blue-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-clock text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Fast Turnaround</h3>
+                    <p class="text-gray-300">Quick quotes and rapid production with real-time tracking</p>
+                </div>
+                
+                <div class="feature-card p-8 rounded-lg">
+                    <div class="w-16 h-16 bg-blue-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-users text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Expert Support</h3>
+                    <p class="text-gray-300">24/7 technical support from 3D printing specialists</p>
+                </div>
+                
+                <div class="feature-card p-8 rounded-lg">
+                    <div class="w-16 h-16 bg-blue-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-certificate text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Quality Assured</h3>
+                    <p class="text-gray-300">ISO certified processes with rigorous quality control</p>
+                </div>
+                
+                <div class="feature-card p-8 rounded-lg">
+                    <div class="w-16 h-16 bg-blue-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-bolt text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Cutting-edge Technology</h3>
+                    <p class="text-gray-300">Latest 3D printing technologies and materials</p>
+                </div>
+                
+                <div class="feature-card p-8 rounded-lg">
+                    <div class="w-16 h-16 bg-blue-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-globe text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Global Network</h3>
+                    <p class="text-gray-300">Worldwide print farm network for local production</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Products Section -->
+    <section id="products" class="relative z-10 px-4 py-20">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="section-title">Premium Filaments</h2>
+                <p class="section-subtitle">High-quality materials for all your 3D printing needs</p>
+            </div>
+            
+            <!-- Premium Filaments -->
+            <div class="mb-20">
+                <h3 class="text-3xl font-bold text-center mb-12">Premium <span class="text-blue-400">Filaments</span></h3>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
+                    <!-- PLA Filament -->
+                    <div class="product-card p-6 rounded-lg">
+                        <h4 class="text-xl font-bold mb-3">PLA Filament</h4>
+                        <p class="text-gray-300 text-sm mb-4">Easy to print, biodegradable, perfect for beginners</p>
+                        <p class="text-blue-400 font-semibold mb-4">Density: 1.24 g/cm³</p>
+                        <div class="mb-4">
+                            <p class="text-sm font-medium mb-2">Available Colors:</p>
+                            <div class="flex flex-wrap">
+                                <span class="color-dot bg-red-500"></span>
+                                <span class="color-dot bg-blue-500"></span>
+                                <span class="color-dot bg-green-500"></span>
+                                <span class="color-dot bg-black"></span>
+                                <span class="color-dot bg-white"></span>
+                                <span class="color-dot bg-yellow-400"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- PETG Filament -->
+                    <div class="product-card p-6 rounded-lg">
+                        <h4 class="text-xl font-bold mb-3">PETG Filament</h4>
+                        <p class="text-gray-300 text-sm mb-4">Chemical resistant, crystal clear, food-safe</p>
+                        <p class="text-blue-400 font-semibold mb-4">Density: 1.27 g/cm³</p>
+                        <div class="mb-4">
+                            <p class="text-sm font-medium mb-2">Available Colors:</p>
+                            <div class="flex flex-wrap">
+                                <span class="color-dot bg-transparent border-2 border-white"></span>
+                                <span class="color-dot bg-black"></span>
+                                <span class="color-dot bg-white"></span>
+                                <span class="color-dot bg-blue-500"></span>
+                                <span class="color-dot bg-red-500"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- ABS Filament -->
+                    <div class="product-card p-6 rounded-lg">
+                        <h4 class="text-xl font-bold mb-3">ABS Filament</h4>
+                        <p class="text-gray-300 text-sm mb-4">Strong, durable, heat-resistant for functional parts</p>
+                        <p class="text-blue-400 font-semibold mb-4">Density: 1.04 g/cm³</p>
+                        <div class="mb-4">
+                            <p class="text-sm font-medium mb-2">Available Colors:</p>
+                            <div class="flex flex-wrap">
+                                <span class="color-dot bg-black"></span>
+                                <span class="color-dot bg-white"></span>
+                                <span class="color-dot bg-red-500"></span>
+                                <span class="color-dot bg-blue-500"></span>
+                                <span class="color-dot bg-gray-300"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- PC Filament -->
+                    <div class="product-card p-6 rounded-lg">
+                        <h4 class="text-xl font-bold mb-3">PC Filament</h4>
+                        <p class="text-gray-300 text-sm mb-4">Engineering grade, high temperature resistance</p>
+                        <p class="text-blue-400 font-semibold mb-4">Density: 1.20 g/cm³</p>
+                        <div class="mb-4">
+                            <p class="text-sm font-medium mb-2">Available Colors:</p>
+                            <div class="flex flex-wrap">
+                                <span class="color-dot bg-transparent border-2 border-white"></span>
+                                <span class="color-dot bg-black"></span>
+                                <span class="color-dot bg-white"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Advanced Materials -->
+                <h4 class="text-2xl font-bold text-center mb-8">Advanced <span class="text-blue-400">Materials</span></h4>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <!-- PETG-CF -->
+                    <div class="product-card p-6 rounded-lg">
+                        <h4 class="text-xl font-bold mb-3">PETG-CF</h4>
+                        <p class="text-gray-300 text-sm mb-4">Carbon fiber reinforced PETG for strength</p>
+                        <p class="text-blue-400 font-semibold mb-4">Density: 1.36 g/cm³</p>
+                        <div class="mb-4">
+                            <p class="text-sm font-medium mb-2">Available Colors:</p>
+                            <div class="flex flex-wrap">
+                                <span class="color-dot bg-black"></span>
+                                <span class="color-dot bg-gray-600"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- PA-CF -->
+                    <div class="product-card p-6 rounded-lg">
+                        <h4 class="text-xl font-bold mb-3">PA-CF</h4>
+                        <p class="text-gray-300 text-sm mb-4">Carbon fiber nylon for aerospace applications</p>
+                        <p class="text-blue-400 font-semibold mb-4">Density: 1.40 g/cm³</p>
+                        <div class="mb-4">
+                            <p class="text-sm font-medium mb-2">Available Colors:</p>
+                            <div class="flex flex-wrap">
+                                <span class="color-dot bg-black"></span>
+                                <span class="color-dot bg-gray-300"></span>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- ASA Filament -->
+                    <div class="product-card p-6 rounded-lg">
+                        <h4 class="text-xl font-bold mb-3">ASA Filament</h4>
+                        <p class="text-gray-300 text-sm mb-4">UV resistant, outdoor applications</p>
+                        <p class="text-blue-400 font-semibold mb-4">Density: 1.07 g/cm³</p>
+                        <div class="mb-4">
+                            <p class="text-sm font-medium mb-2">Available Colors:</p>
+                            <div class="flex flex-wrap">
+                                <span class="color-dot bg-black"></span>
+                                <span class="color-dot bg-white"></span>
+                                <span class="color-dot bg-red-500"></span>
+                                <span class="color-dot bg-blue-500"></span>
+                                <span class="color-dot bg-gray-500"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Solutions Section -->
+    <section id="solutions" class="relative z-10 px-4 py-20">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="section-title">Industry Solutions</h2>
+                <p class="section-subtitle">Tailored 3D printing solutions for every industry, from rapid prototyping to end-use production parts</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <!-- Automotive -->
+                <div class="feature-card p-8 rounded-lg">
+                    <div class="w-16 h-16 bg-red-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-car text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Automotive</h3>
+                    <p class="text-gray-300 mb-4">Rapid prototyping, custom tooling, and end-use parts for automotive applications.</p>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>Functional prototypes</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>Custom jigs and fixtures</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>Low-volume production parts</li>
+                    </ul>
+                </div>
+                
+                <!-- Aerospace -->
+                <div class="feature-card p-8 rounded-lg">
+                    <div class="w-16 h-16 bg-blue-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-plane text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Aerospace</h3>
+                    <p class="text-gray-300 mb-4">Lightweight, high-strength components for aerospace and defense applications.</p>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>Complex geometries</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>Weight reduction</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>High-performance materials</li>
+                    </ul>
+                </div>
+                
+                <!-- Medical -->
+                <div class="feature-card p-8 rounded-lg">
+                    <div class="w-16 h-16 bg-green-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-heartbeat text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Medical</h3>
+                    <p class="text-gray-300 mb-4">Biocompatible materials for medical devices, surgical guides, and prosthetics.</p>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>Surgical instruments</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>Patient-specific implants</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>Anatomical models</li>
+                    </ul>
+                </div>
+                
+                <!-- Consumer Products -->
+                <div class="feature-card p-8 rounded-lg">
+                    <div class="w-16 h-16 bg-purple-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-mobile-alt text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Consumer Products</h3>
+                    <p class="text-gray-300 mb-4">Custom electronics housings, accessories, and consumer goods.</p>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>Product prototypes</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>Custom enclosures</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>Personalized products</li>
+                    </ul>
+                </div>
+                
+                <!-- Architecture -->
+                <div class="feature-card p-8 rounded-lg">
+                    <div class="w-16 h-16 bg-yellow-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-building text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Architecture</h3>
+                    <p class="text-gray-300 mb-4">Detailed architectural models and building components for design visualization.</p>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>Scale models</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>Design validation</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>Client presentations</li>
+                    </ul>
+                </div>
+                
+                <!-- Education -->
+                <div class="feature-card p-8 rounded-lg">
+                    <div class="w-16 h-16 bg-indigo-600 rounded-lg flex items-center justify-center mb-6">
+                        <i class="fas fa-graduation-cap text-2xl text-white"></i>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Education</h3>
+                    <p class="text-gray-300 mb-4">Educational models, research prototypes, and STEM learning tools.</p>
+                    <ul class="space-y-2 text-sm">
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>Teaching aids</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>Research models</li>
+                        <li class="flex items-center"><i class="fas fa-check text-green-400 mr-2"></i>Student projects</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- About Section -->
+    <section id="about" class="relative z-10 px-4 py-20">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="section-title">About Unbound<span class="brand-3d">3D</span></h2>
+                <p class="section-subtitle">Founded with a vision to democratize 3D printing technology</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                <div>
+                    <div class="feature-card p-8 rounded-lg">
+                        <h3 class="text-2xl font-bold mb-6">Our Story</h3>
+                        <p class="text-gray-300 mb-6">
+                           Unbound<span class="brand-3d">3D</span> is a dedicated platform for making 3D printing reachable for everyone. Our mission is to deliver quality products while providing a wonderful user experience, making it easy for users to transform their prototypes into products.
+                        </p>
+                        <p class="text-gray-300 mb-6">
+                            We are actively looking for more clients to showcase our talent and expand our impact in the 3D printing industry. With cutting-edge technology and a passion for innovation, we're building the future of manufacturing.
+                        </p>
+                        
+                        <div class="grid grid-cols-2 gap-6 mt-8">
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-blue-400">2025</div>
+                                <p class="text-gray-400">Founded</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-3xl font-bold text-green-400">100+</div>
+                                <p class="text-gray-400">Projects</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div>
+                    <div class="feature-card p-8 rounded-lg mb-6">
+                        <h3 class="text-2xl font-bold mb-4">Our Mission</h3>
+                        <p class="text-gray-300">
+                            To democratize 3D printing by providing a platform that connects creators with cutting-edge printing technology, making professional-grade manufacturing accessible to everyone.
+                        </p>
+                    </div>
+                    
+                    <div class="feature-card p-8 rounded-lg">
+                        <h3 class="text-2xl font-bold mb-4">Our Values</h3>
+                        <ul class="space-y-3 text-gray-300">
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-blue-400 mr-3"></i>
+                                Innovation in every solution
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-blue-400 mr-3"></i>
+                                Quality without compromise
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-blue-400 mr-3"></i>
+                                Customer-centric approach
+                            </li>
+                            <li class="flex items-center">
+                                <i class="fas fa-check text-blue-400 mr-3"></i>
+                                Sustainable practices
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Contact Section -->
+    <section id="contact" class="relative z-10 px-4 py-20">
+        <div class="max-w-7xl mx-auto">
+            <div class="text-center mb-16">
+                <h2 class="section-title">Get in Touch</h2>
+                <p class="section-subtitle">Ready to start your next project? Let's discuss how we can help bring your ideas to life</p>
+            </div>
+            
+            <div class="grid md:grid-cols-2 gap-12">
+                <!-- Contact Form -->
+                <div class="feature-card p-8 rounded-lg">
+                    <h3 class="text-2xl font-bold mb-6">Send us a Message</h3>
+                    <p class="text-gray-300 mb-6">Our Team will get back to you within 24 hours.</p>
+                    
+                    <form id="contactForm" class="space-y-6">
+                        <div class="grid md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium mb-2">First Name</label>
+                                <input type="text" name="first_name" required class="input-field w-full px-4 py-3 rounded-lg text-white placeholder-gray-400 focus:outline-none">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium mb-2">Last Name</label>
+                                <input type="text" name="last_name" required class="input-field w-full px-4 py-3 rounded-lg text-white placeholder-gray-400 focus:outline-none">
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Email</label>
+                            <input type="email" name="email" placeholder="alpha@example.com" required class="input-field w-full px-4 py-3 rounded-lg text-white placeholder-gray-400 focus:outline-none">
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Contact Number</label>
+                            <div class="flex">
+                                <select id="contact_country_code" name="contact_country_code" class="input-field px-2 py-3 rounded-l-lg text-white focus:outline-none" style="max-width: 150px;">
+                                    <option value="+91" selected>(IND) +91</option>
+                                    <option value="+1">(US) +1</option>
+                                    <option value="+44">(UK) +44</option>
+                                    <option value="+61">(AUS) +61</option>
+                                    <option value="+971">(UAE) +971</option>
+                                    <!-- Add more country codes as needed -->
+                                </select>
+                                <input type="tel" name="contact_number" id="contact_number" pattern="[0-9]{10}" maxlength="10" minlength="10" class="input-field w-full px-4 py-3 rounded-r-lg text-white placeholder-gray-400 focus:outline-none" placeholder="10-digit mobile number">
+                            </div>
+                            <p class="text-xs text-gray-400 mt-1">Enter a 10-digit mobile number (without country code)</p>
+                        </div>
+                        
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Message</label>
+                            <textarea name="message" rows="4" placeholder="Tell us about your project requirements..." required class="input-field w-full px-4 py-3 rounded-lg text-white placeholder-gray-400 focus:outline-none"></textarea>
+                        </div>
+                        
+                        <button type="submit" class="professional-btn w-full justify-center">
+                            <i class="fas fa-paper-plane"></i>
+                            Send Message
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Contact Information -->
+                <div class="space-y-8">
+                    <!-- Contact Details -->
+                    <div class="feature-card p-8 rounded-lg">
+                        <h3 class="text-2xl font-bold mb-6">Contact Information</h3>
+                        <p class="text-gray-300 mb-6">Reach out to us through any of these channels.</p>
+                        
+                        <div class="space-y-6">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-map-marker-alt text-white"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold mb-1">Address</h4>
+                                    <p class="text-gray-300">
+                                        Unbound<span class="brand-3d">3D</span>,<br>
+                                        Indira Nagar, Bengaluru, India
+                                    </p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-phone text-white"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold mb-1">Phone</h4>
+                                    <p class="text-gray-300">+91 7558150570</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-envelope text-white"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold mb-1">Email</h4>
+                                    <p class="text-gray-300">info@unbound3d.com</p>
+                                    <p class="text-gray-300">support@unbound3d.com</p>
+                                </div>
+                            </div>
+                            
+                            <div class="flex items-start space-x-4">
+                                <div class="w-12 h-12 bg-yellow-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-clock text-white"></i>
+                                </div>
+                                <div>
+                                    <h4 class="font-bold mb-1">Business Hours</h4>
+                                    <p class="text-gray-300">
+                                        Monday - Friday: 9:00 AM - 6:00 PM<br>
+                                        Saturday: 10:00 AM - 4:00 PM<br>
+                                        Sunday: Closed
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- Why Choose Us -->
+                    <div class="feature-card p-8 rounded-lg">
+                        <h3 class="text-2xl font-bold mb-6">Why Choose Us?</h3>
+                        
+                        <div class="grid grid-cols-2 gap-6">
+                            <div class="text-center">
+                                <div class="text-4xl font-bold text-white mb-2">24h</div>
+                                <p class="text-gray-300 text-sm">Response Time</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="text-4xl font-bold text-white mb-2">99%</div>
+                                <p class="text-gray-300 text-sm">Success Rate</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="relative z-10 px-4 py-12 border-t border-gray-800">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid md:grid-cols-4 gap-8">
+                <div>
+                    <span class="text-xl font-bold">Unbound<span class="brand-3d">3D</span></span>
+                    <p class="text-gray-400 mb-4">The Power to Create by Virtually Owning a 3D Printer</p>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold mb-4">Services</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-blue-400 smooth-transition">3D Printing</a></li>
+                        <li><a href="#" class="hover:text-blue-400 smooth-transition">Prototyping</a></li>
+                        <li><a href="#" class="hover:text-blue-400 smooth-transition">Custom Parts</a></li>
+                        <li><a href="#" class="hover:text-blue-400 smooth-transition">Post-Processing</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold mb-4">Support</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-blue-400 smooth-transition">Help Center</a></li>
+                        <li><a href="#contact" class="hover:text-blue-400 smooth-transition">Contact Us</a></li>
+                        <li><a href="#" class="hover:text-blue-400 smooth-transition">Documentation</a></li>
+                        <li><a href="#" class="hover:text-blue-400 smooth-transition">API</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h3 class="font-bold mb-4">Legal</h3>
+                    <ul class="space-y-2 text-gray-400">
+                        <li><a href="#" class="hover:text-blue-400 smooth-transition">Privacy Policy</a></li>
+                        <li><a href="#" class="hover:text-blue-400 smooth-transition">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-blue-400 smooth-transition">Cookie Policy</a></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-800 mt-8 pt-8 text-center">
+                <p class="text-gray-500">&copy; 2025 Unbound<span class="brand-3d">3D™</span> powered by Indronovation Labs Pvt Ltd. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Create floating particles
+        function createParticles() {
+            const container = document.getElementById('particleContainer');
+            const particleCount = 50;
+            
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.top = Math.random() * 100 + '%';
+                particle.style.width = Math.random() * 4 + 2 + 'px';
+                particle.style.height = particle.style.width;
+                particle.style.animationDelay = Math.random() * 6 + 's';
+                particle.style.animationDuration = (Math.random() * 4 + 4) + 's';
+                container.appendChild(particle);
+            }
+        }
+        
+        // Toggle mobile menu
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+        
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        // Contact form submission
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            // Show loading state
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            submitBtn.disabled = true;
+            // Gather form data
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            // Validate contact number (exactly 10 digits)
+            const contactNumber = document.getElementById('contact_number').value;
+            if (!/^\d{10}$/.test(contactNumber)) {
+                submitBtn.style.border = '2px solid red';
+                alert('Please enter a valid 10-digit mobile number.');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+                return;
+            } else {
+                submitBtn.style.border = '';
+            }
+            // Combine country code and number
+            data.contact_number = `${document.getElementById('contact_country_code').value}${contactNumber}`;
+            // Send to backend
+            fetch('/api/contact-message', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    alert('Thank you for your message! We\'ll get back to you within 24 hours.');
+                    e.target.reset();
+                } else {
+                    alert(result.error || 'Failed to send message. Please try again.');
+                }
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            })
+            .catch(() => {
+                alert('An error occurred. Please try again.');
+                submitBtn.innerHTML = originalText;
+                submitBtn.disabled = false;
+            });
+        });
+        
+        // Initialize particles when page loads
+        document.addEventListener('DOMContentLoaded', createParticles);
+    </script>
+</body>
+</html>

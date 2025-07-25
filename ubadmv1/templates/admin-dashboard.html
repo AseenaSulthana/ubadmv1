@@ -1,0 +1,1038 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Unbound3D</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #000000;
+        }
+        
+        .brand-3d {
+            color: #3b82f6;
+        }
+        
+        .sidebar {
+            background: #000000;
+            border-right: 1px solid #1f2937;
+        }
+        
+        .card {
+            background: rgba(17, 24, 39, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        .smooth-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .professional-btn {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid #3b82f6;
+            border-left: 4px solid #3b82f6;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        
+        .professional-btn:hover {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+        }
+        
+        .nav-item {
+            background: transparent;
+            border: 1px solid transparent;
+            border-left: 4px solid transparent;
+            color: #9ca3af;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            margin: 4px 0;
+        }
+        
+        .nav-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
+            border-left-color: #3b82f6;
+            color: white;
+        }
+        
+        .nav-item.active {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-color: #3b82f6;
+            border-left-color: #3b82f6;
+            color: white;
+        }
+        
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+        
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+        
+        .alert-success {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #86efac;
+        }
+
+        /* Updated tab styles */
+        .tab-container {
+            background: rgba(17, 24, 39, 0.9);
+            border-bottom: 2px solid rgba(59, 130, 246, 0.2);
+            padding: 8px 16px;
+            display: flex;
+            gap: 16px;
+            margin-bottom: 16px;
+            border-radius: 8px 8px 0 0;
+        }
+
+        .tab {
+            padding: 8px 16px;
+            color: #9ca3af;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+
+        .tab:hover {
+            color: #d1d5db;
+        }
+
+        .tab.active {
+            color: #3b82f6;
+            border-bottom-color: #3b82f6;
+            background: rgba(59, 130, 246, 0.1);
+            border-radius: 4px;
+        }
+
+        .quote-tab {
+            display: none;
+        }
+
+        .quote-tab.active {
+            display: block;
+        }
+    </style>
+</head>
+<body class="bg-black text-white">
+    <!-- Sidebar -->
+    <div class="fixed inset-y-0 left-0 w-64 sidebar">
+        <div class="flex flex-col h-full">
+            <!-- Logo -->
+            <div class="flex items-center space-x-2 p-6 border-b border-gray-700">
+                <div class="w-10 h-10 bg-blue-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-print text-white text-xl"></i>
+                </div>
+                <span class="text-xl font-bold">Unbound<span class="brand-3d">3D</span></span>
+            </div>
+            
+            <!-- Navigation -->
+            <nav class="flex-1 p-6">
+                <ul class="space-y-2">
+                    <li>
+                        <a href="#" class="nav-item active" onclick="showSection('dashboard')">
+                            <i class="fas fa-tachometer-alt"></i>
+                            <span>Dashboard</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-item" onclick="showSection('quotes')">
+                            <i class="fas fa-file-invoice"></i>
+                            <span>Quotes</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-item" onclick="showSection('orders')">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span>Orders</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-item" onclick="showSection('users')">
+                            <i class="fas fa-users"></i>
+                            <span>Users</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-item" onclick="showSection('analytics')">
+                            <i class="fas fa-chart-bar"></i>
+                            <span>Analytics</span>
+                        </a>
+                    </li>
+                    <li>
+                        <a href="#" class="nav-item" onclick="showSection('messages')">
+                            <i class="fas fa-envelope"></i>
+                            <span>Messages</span>
+                        </a>
+                    </li>
+                </ul>
+            </nav>
+            
+            <!-- User Profile -->
+            <div class="p-6 border-t border-gray-700">
+                <div class="flex items-center space-x-3">
+                    <div class="w-10 h-10 bg-purple-600 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user-shield text-white"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium" id="adminName">Loading...</p>
+                        <p class="text-sm text-gray-400" id="adminType">Administrator</p>
+                    </div>
+                </div>
+                <button onclick="logout()" class="mt-4 w-full bg-red-600 hover:bg-red-700 py-2 px-4 rounded-lg text-sm font-medium smooth-transition">
+                    Sign Out
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Main Content -->
+    <div class="ml-64 p-8">
+        <!-- Header -->
+        <div class="mb-8">
+            <h1 class="text-3xl font-bold mb-2">Admin Dashboard</h1>
+            <p class="text-gray-400">Manage quotes, orders, and platform operations</p>
+        </div>
+        
+        <!-- Dashboard Section -->
+        <div id="dashboard" class="section">
+            <!-- Stats Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8" id="statsCards">
+                <!-- Stats will be loaded here -->
+            </div>
+            
+            <!-- Recent Activity -->
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="card p-6 rounded-lg">
+                    <h3 class="text-xl font-bold mb-4">Recent Quote Requests</h3>
+                    <div id="recentQuotes" class="space-y-4">
+                        <!-- Recent quotes will be loaded here -->
+                    </div>
+                </div>
+                
+                <div class="card p-6 rounded-lg">
+                    <h3 class="text-xl font-bold mb-4">Active Print Jobs</h3>
+                    <div id="activeJobs" class="space-y-4">
+                        <!-- Active jobs will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Quote Management Section -->
+        <div id="quotes" class="section hidden">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold mb-2">Quote Management</h2>
+                <p class="text-gray-400">Review and provide quotes for client projects</p>
+            </div>
+            
+            <div class="card p-6 rounded-lg">
+                <div class="tab-container">
+                    <div class="tab active" onclick="showQuoteTab('pending-quotes')">Pending Quotes</div>
+                    <div class="tab" onclick="showQuoteTab('quoted')">Quoted</div>
+                </div>
+                
+                <div id="pending-quotes" class="quote-tab active">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-gray-700">
+                                    <th class="text-left py-3">Project ID</th>
+                                    <th class="text-left py-3">Project Name</th>
+                                    <th class="text-left py-3">Client</th>
+                                    <th class="text-left py-3">File Count</th>
+                                    <th class="text-left py-3">Submitted</th>
+                                    <th class="text-left py-3">Status</th>
+                                    <th class="text-left py-3">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pendingQuotesTableBody">
+                                <!-- Pending quotes will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+                
+                <div id="quoted" class="quote-tab">
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead>
+                                <tr class="border-b border-gray-700">
+                                    <th class="text-left py-3">Project ID</th>
+                                    <th class="text-left py-3">Project Name</th>
+                                    <th class="text-left py-3">Client</th>
+                                    <th class="text-left py-3">Quote Amount</th>
+                                    <th class="text-left py-3">Quoted Date</th>
+                                    <th class="text-left py-3">Status</th>
+                                    <th class="text-left py-3">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="quotedTableBody">
+                                <!-- Quoted projects will be loaded here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Order Management Section -->
+        <div id="orders" class="section hidden">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold mb-2">Order Management</h2>
+                <p class="text-gray-400">Track and manage all active orders</p>
+            </div>
+            
+            <div class="card p-6 rounded-lg">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b border-gray-700">
+                                <th class="text-left py-3">Order ID</th>
+                                <th class="text-left py-3">Project ID</th>
+                                <th class="text-left py-3">Client</th>
+                                <th class="text-left py-3">Amount</th>
+                                <th class="text-left py-3">Status</th>
+                                <th class="text-left py-3">Created</th>
+                                <th class="text-left py-3">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="ordersTableBody">
+                            <!-- Orders will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- User Management Section -->
+        <div id="users" class="section hidden">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold mb-2">User Management</h2>
+                <p class="text-gray-400">Manage clients and their accounts</p>
+            </div>
+            
+            <div class="card p-6 rounded-lg">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b border-gray-700">
+                                <th class="text-left py-3">User ID</th>
+                                <th class="text-left py-3">Name</th>
+                                <th class="text-left py-3">Email</th>
+                                <th class="text-left py-3">Purpose</th>
+                                <th class="text-left py-3">Verified</th>
+                                <th class="text-left py-3">Joined</th>
+                                <th class="text-left py-3">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="usersTableBody">
+                            <!-- Users will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Analytics Section -->
+        <div id="analytics" class="section hidden">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold mb-2">Analytics & Reports</h2>
+                <p class="text-gray-400">Platform performance and business insights</p>
+            </div>
+            
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                <div class="card p-6 rounded-lg">
+                    <h3 class="text-xl font-bold mb-4">Revenue Analytics</h3>
+                    <div id="revenueAnalytics" class="space-y-4">
+                        <!-- Revenue data will be loaded here -->
+                    </div>
+                </div>
+                
+                <div class="card p-6 rounded-lg">
+                    <h3 class="text-xl font-bold mb-4">Order Statistics</h3>
+                    <div id="orderStatistics" class="space-y-4">
+                        <!-- Order statistics will be loaded here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Messages Section -->
+        <div id="messages" class="section hidden">
+            <div class="mb-6">
+                <h2 class="text-2xl font-bold mb-2">Contact Messages</h2>
+                <p class="text-gray-400">Messages from website contact form</p>
+            </div>
+            
+            <div class="card p-6 rounded-lg">
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead>
+                            <tr class="border-b border-gray-700">
+                                <th class="text-left py-3">Name</th>
+                                <th class="text-left py-3">Email</th>
+                                <th class="text-left py-3">Contact</th>
+                                <th class="text-left py-3">Message</th>
+                                <th class="text-left py-3">Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="messagesTableBody">
+                            <!-- Messages will be loaded here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Quote Modal -->
+    <div id="quoteModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="card p-8 rounded-lg max-w-md w-full mx-4">
+            <h3 class="text-xl font-bold mb-4">Create Quote</h3>
+            <div id="quoteAlertContainer"></div>
+            
+            <form id="quoteForm" class="space-y-4">
+                <input type="hidden" id="quoteProjectId" name="project_id">
+                
+                <div>
+                    <label class="block text-sm font-medium mb-2">Material Cost (₹)</label>
+                    <input type="number" name="material_cost" required class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:outline-none focus:border-blue-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-2">Print Time (hours)</label>
+                    <input type="number" name="print_time" step="0.5" required class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:outline-none focus:border-blue-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-2">Labor Cost (₹)</label>
+                    <input type="number" name="labor_cost" required class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:outline-none focus:border-blue-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-2">Total Quote (₹)</label>
+                    <input type="number" name="total_price" required class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:outline-none focus:border-blue-500">
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-2">Notes</label>
+                    <textarea name="notes" rows="3" class="w-full px-4 py-2 rounded-lg bg-gray-700 border border-gray-600 text-white focus:outline-none focus:border-blue-500" placeholder="Additional notes for the client..."></textarea>
+                </div>
+                
+                <div class="flex space-x-4">
+                    <button type="submit" class="professional-btn flex-1 justify-center">
+                        <i class="fas fa-paper-plane"></i>
+                        Send Quote
+                    </button>
+                    <button type="button" onclick="closeQuoteModal()" class="professional-btn flex-1 justify-center">
+                        <i class="fas fa-times"></i>
+                        Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+    
+    <!-- View Quote Modal -->
+    <div id="viewQuoteModal" class="fixed inset-0 bg-black bg-opacity-50 hidden flex items-center justify-center z-50">
+        <div class="card p-8 rounded-lg max-w-lg w-full mx-4">
+            <h3 class="text-xl font-bold mb-4">Project Details</h3>
+            <div id="viewQuoteContent">
+                <!-- Project details will be loaded here -->
+            </div>
+            <div class="flex justify-end mt-6">
+                <button type="button" onclick="closeViewQuoteModal()" class="professional-btn">
+                    <i class="fas fa-times"></i> Close
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        let currentAdmin = null;
+        
+        // Check authentication on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+        });
+        
+        function checkAuth() {
+            fetch('/admin/check-auth')
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        currentAdmin = result.admin;
+                        document.getElementById('adminName').textContent = result.admin.name;
+                        document.getElementById('adminType').textContent = result.admin.admin_type;
+                        loadDashboardData();
+                    } else {
+                        window.location.href = '/admin/signin';
+                    }
+                })
+                .catch(error => {
+                    console.error('Auth check failed:', error);
+                    window.location.href = '/admin/signin';
+                });
+        }
+        
+        function logout() {
+            fetch('/admin/logout', { method: 'POST' })
+                .then(() => {
+                    window.location.href = '/admin/signin';
+                })
+                .catch(error => {
+                    console.error('Logout failed:', error);
+                    window.location.href = '/admin/signin';
+                });
+        }
+        
+        function loadDashboardData() {
+            loadStats();
+            loadRecentQuotes();
+            loadActiveJobs();
+        }
+        
+        function loadStats() {
+            fetch('/admin/api/stats')
+                .then(response => response.json())
+                .then(stats => {
+                    const statsContainer = document.getElementById('statsCards');
+                    statsContainer.innerHTML = `
+                        <div class="card p-6 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-400 text-sm">Pending Quotes</p>
+                                    <p class="text-2xl font-bold">${stats.pending_quotes || 0}</p>
+                                </div>
+                                <div class="w-12 h-12 bg-yellow-600 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-file-invoice text-white"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card p-6 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-400 text-sm">Active Orders</p>
+                                    <p class="text-2xl font-bold">${stats.active_orders || 0}</p>
+                                </div>
+                                <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-shopping-cart text-white"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card p-6 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-400 text-sm">Total Users</p>
+                                    <p class="text-2xl font-bold">${stats.total_users || 0}</p>
+                                </div>
+                                <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-users text-white"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card p-6 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-400 text-sm">Monthly Revenue</p>
+                                    <p class="text-2xl font-bold">₹${(stats.monthly_revenue || 0).toLocaleString()}</p>
+                                </div>
+                                <div class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-rupee-sign text-white"></i>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                })
+                .catch(error => console.error('Error loading stats:', error));
+        }
+        
+        function loadRecentQuotes() {
+            fetch('/admin/api/pending-quotes')
+                .then(response => response.json())
+                .then(quotes => {
+                    const container = document.getElementById('recentQuotes');
+                    if (quotes.length === 0) {
+                        container.innerHTML = '<p class="text-gray-400">No pending quotes</p>';
+                        return;
+                    }
+                    
+                    container.innerHTML = quotes.slice(0, 3).map(quote => `
+                        <div class="flex items-center justify-between p-4 bg-gray-800 rounded-lg">
+                            <div>
+                                <p class="font-medium">${quote.project_name} - ${quote.user_name}</p>
+                                <p class="text-sm text-gray-400">${quote.file_count} files, ${quote.purpose}</p>
+                            </div>
+                            <button onclick="openQuoteModal('${quote.project_id}')" class="professional-btn text-sm">
+                                <i class="fas fa-quote-left"></i>
+                                Quote
+                            </button>
+                        </div>
+                    `).join('');
+                })
+                .catch(error => console.error('Error loading recent quotes:', error));
+        }
+        
+        function loadActiveJobs() {
+            fetch('/admin/api/active-orders')
+                .then(response => response.json())
+                .then(orders => {
+                    const container = document.getElementById('activeJobs');
+                    if (orders.length === 0) {
+                        container.innerHTML = '<p class="text-gray-400">No active jobs</p>';
+                        return;
+                    }
+                    
+                    container.innerHTML = orders.slice(0, 3).map(order => `
+                        <div class="flex items-center justify-between p-4 bg-gray-800 rounded-lg">
+                            <div>
+                                <p class="font-medium">Order ${order.order_id}</p>
+                                <p class="text-sm text-gray-400">${order.user_name} - ${order.order_status}</p>
+                            </div>
+                            <span class="bg-blue-600 px-2 py-1 rounded text-xs">${order.order_status}</span>
+                        </div>
+                    `).join('');
+                })
+                .catch(error => console.error('Error loading active jobs:', error));
+        }
+        
+        // Section navigation
+        function showSection(sectionName) {
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            document.getElementById(sectionName).classList.remove('hidden');
+            
+            document.querySelectorAll('.nav-item').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            event.target.closest('.nav-item').classList.add('active');
+            
+            // Load section-specific data
+            switch(sectionName) {
+                case 'quotes':
+                    showQuoteTab('pending-quotes');
+                    break;
+                case 'orders':
+                    loadOrders();
+                    break;
+                case 'users':
+                    loadUsers();
+                    break;
+                case 'analytics':
+                    loadAnalytics();
+                    break;
+                case 'messages':
+                    loadMessages();
+                    break;
+            }
+        }
+
+        // Quote tab navigation
+        function showQuoteTab(tabName) {
+            document.querySelectorAll('.quote-tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.classList.remove('active');
+            });
+            
+            document.getElementById(tabName).classList.add('active');
+            event.target.classList.add('active');
+            
+            if (tabName === 'pending-quotes') {
+                loadPendingQuotes();
+            } else if (tabName === 'quoted') {
+                loadQuotedProjects();
+            }
+        }
+        
+        function loadPendingQuotes() {
+            fetch('/admin/api/pending-quotes')
+                .then(response => response.json())
+                .then(quotes => {
+                    const tbody = document.getElementById('pendingQuotesTableBody');
+                    tbody.innerHTML = quotes.map(quote => `
+                        <tr class="border-b border-gray-800">
+                            <td class="py-4">${quote.project_id}</td>
+                            <td class="py-4">${quote.project_name}</td>
+                            <td class="py-4">${quote.user_name}</td>
+                            <td class="py-4 text-center">${quote.file_count}</td>
+                            <td class="py-4">${new Date(quote.created_at).toLocaleDateString()}</td>
+                            <td class="py-4">
+                                <span class="bg-yellow-600 px-2 py-1 rounded text-xs">Pending</span>
+                            </td>
+                            <td class="py-4">
+                                <button onclick="openQuoteModal('${quote.project_id}')" class="professional-btn text-sm mr-2">
+                                    Create Quote
+                                </button>
+                                <button onclick="openViewQuoteModal('${quote.project_id}')" class="professional-btn text-sm bg-gray-700 border-blue-400">
+                                    View Quote
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+                })
+                .catch(error => console.error('Error loading pending quotes:', error));
+        }
+
+        function loadQuotedProjects() {
+            fetch('/admin/api/quoted-projects')
+                .then(response => response.json())
+                .then(quotes => {
+                    const tbody = document.getElementById('quotedTableBody');
+                    tbody.innerHTML = quotes.map(quote => `
+                        <tr class="border-b border-gray-800">
+                            <td class="py-4">${quote.project_id}</td>
+                            <td class="py-4">${quote.project_name}</td>
+                            <td class="py-4">${quote.user_name}</td>
+                            <td class="py-4">₹${(quote.total_price || 0).toLocaleString()}</td>
+                            <td class="py-4">${new Date(quote.quoted_at).toLocaleDateString()}</td>
+                            <td class="py-4">
+                                <span class="bg-blue-600 px-2 py-1 rounded text-xs">Quoted</span>
+                            </td>
+                            <td class="py-4">
+                                <button onclick="openViewQuoteModal('${quote.project_id}')" class="professional-btn text-sm bg-gray-700 border-blue-400">
+                                    View Quote
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+                })
+                .catch(error => console.error('Error loading quoted projects:', error));
+        }
+        
+        function loadOrders() {
+            fetch('/admin/api/orders')
+                .then(response => response.json())
+                .then(orders => {
+                    const tbody = document.getElementById('ordersTableBody');
+                    tbody.innerHTML = orders.map(order => `
+                        <tr class="border-b border-gray-800">
+                            <td class="py-4">${order.order_id}</td>
+                            <td class="py-4">${order.project_id || 'N/A'}</td>
+                            <td class="py-4">${order.user_name}</td>
+                            <td class="py-4">₹${order.total_amount}</td>
+                            <td class="py-4">
+                                <span class="bg-blue-600 px-2 py-1 rounded text-xs">${order.order_status}</span>
+                            </td>
+                            <td class="py-4">${new Date(order.created_at).toLocaleDateString()}</td>
+                            <td class="py-4">
+                                <select onchange="updateOrderStatus('${order.order_id}', this.value)" class="bg-gray-700 text-white px-2 py-1 rounded text-sm">
+                                    <option value="pending" ${order.order_status === 'pending' ? 'selected' : ''}>Pending</option>
+                                    <option value="approved" ${order.order_status === 'approved' ? 'selected' : ''}>Approved</option>
+                                    <option value="printing" ${order.order_status === 'printing' ? 'selected' : ''}>Printing</option>
+                                    <option value="completed" ${order.order_status === 'completed' ? 'selected' : ''}>Completed</option>
+                                    <option value="shipped" ${order.order_status === 'shipped' ? 'selected' : ''}>Shipped</option>
+                                    <option value="delivered" ${order.order_status === 'delivered' ? 'selected' : ''}>Delivered</option>
+                                </select>
+                            </td>
+                        </tr>
+                    `).join('');
+                })
+                .catch(error => console.error('Error loading orders:', error));
+        }
+        
+        function loadUsers() {
+            fetch('/admin/api/users')
+                .then(response => response.json())
+                .then(users => {
+                    const tbody = document.getElementById('usersTableBody');
+                    tbody.innerHTML = users.map(user => `
+                        <tr class="border-b border-gray-800">
+                            <td class="py-4">${user.user_id}</td>
+                            <td class="py-4">${user.name}</td>
+                            <td class="py-4">${user.email}</td>
+                            <td class="py-4">
+                                <span class="bg-${user.purpose === 'industry' ? 'purple' : 'green'}-600 px-2 py-1 rounded text-xs">
+                                    ${user.purpose}
+                                </span>
+                            </td>
+                            <td class="py-4">
+                                <span class="bg-${user.is_verified ? 'green' : 'red'}-600 px-2 py-1 rounded text-xs">
+                                    ${user.is_verified ? 'Yes' : 'No'}
+                                </span>
+                            </td>
+                            <td class="py-4">${new Date(user.created_at).toLocaleDateString()}</td>
+                            <td class="py-4">
+                                <button onclick="deleteUser('${user.user_id}')" class="text-red-400 hover:text-red-300 text-sm">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </td>
+                        </tr>
+                    `).join('');
+                })
+                .catch(error => console.error('Error loading users:', error));
+        }
+        
+        function loadAnalytics() {
+            const revenueContainer = document.getElementById('revenueAnalytics');
+            const orderContainer = document.getElementById('orderStatistics');
+            
+            fetch('/admin/api/stats')
+                .then(response => response.json())
+                .then(stats => {
+                    revenueContainer.innerHTML = `
+                        <div class="flex justify-between items-center">
+                            <span>This Month</span>
+                            <span class="text-2xl font-bold text-green-400">₹${(stats.monthly_revenue || 0).toLocaleString()}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span>Total Revenue</span>
+                            <span class="text-lg text-gray-400">₹${(stats.total_revenue || 0).toLocaleString()}</span>
+                        </div>
+                    `;
+                    
+                    orderContainer.innerHTML = `
+                        <div class="flex justify-between items-center">
+                            <span>Total Orders</span>
+                            <span class="text-2xl font-bold text-blue-400">${stats.total_orders || 0}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span>Completed</span>
+                            <span class="text-lg text-green-400">${stats.completed_orders || 0}</span>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <span>Success Rate</span>
+                            <span class="text-lg text-green-400">${stats.success_rate || 0}%</span>
+                        </div>
+                    `;
+                })
+                .catch(error => console.error('Error loading analytics:', error));
+        }
+        
+        function loadMessages() {
+            fetch('/admin/api/messages')
+                .then(response => response.json())
+                .then(messages => {
+                    const tbody = document.getElementById('messagesTableBody');
+                    tbody.innerHTML = messages.map(message => `
+                        <tr class="border-b border-gray-800">
+                            <td class="py-4">${message.first_name} ${message.last_name}</td>
+                            <td class="py-4">${message.email}</td>
+                            <td class="py-4">${message.contact_number || 'N/A'}</td>
+                            <td class="py-4">
+                                <div class="max-w-xs truncate" title="${message.message}">
+                                    ${message.message}
+                                </div>
+                            </td>
+                            <td class="py-4">${new Date(message.created_at).toLocaleDateString()}</td>
+                        </tr>
+                    `).join('');
+                })
+                .catch(error => console.error('Error loading messages:', error));
+        }
+        
+        // Quote modal functions
+        function openQuoteModal(projectId) {
+            document.getElementById('quoteProjectId').value = projectId;
+            document.getElementById('quoteModal').classList.remove('hidden');
+        }
+        
+        function closeQuoteModal() {
+            document.getElementById('quoteModal').classList.add('hidden');
+            document.getElementById('quoteForm').reset();
+            document.getElementById('quoteAlertContainer').innerHTML = '';
+        }
+        
+        function showQuoteAlert(message, type = 'error') {
+            const alertContainer = document.getElementById('quoteAlertContainer');
+            const alertClass = type === 'error' ? 'alert-error' : 'alert-success';
+            
+            alertContainer.innerHTML = `
+                <div class="alert ${alertClass}">
+                    <i class="fas fa-${type === 'error' ? 'exclamation-circle' : 'check-circle'} mr-2"></i>
+                    ${message}
+                </div>
+            `;
+        }
+        
+        // Quote form submission
+        document.getElementById('quoteForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            const originalHTML = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            submitBtn.disabled = true;
+            
+            const formData = new FormData(e.target);
+            const data = Object.fromEntries(formData.entries());
+            
+            // Create breakdown object
+            data.breakdown = JSON.stringify({
+                material_cost: parseFloat(data.material_cost),
+                print_time: parseFloat(data.print_time),
+                labor_cost: parseFloat(data.labor_cost)
+            });
+            
+            fetch('/admin/api/create-quote', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    showQuoteAlert('Quote sent successfully!', 'success');
+                    setTimeout(() => {
+                        closeQuoteModal();
+                        loadDashboardData();
+                        if (document.getElementById('quotes').classList.contains('hidden') === false) {
+                            if (document.getElementById('pending-quotes').classList.contains('hidden')) {
+                                loadQuotedProjects();
+                            } else {
+                                loadPendingQuotes();
+                            }
+                        }
+                    }, 2000);
+                } else {
+                    showQuoteAlert(result.error || 'Failed to send quote. Please try again.');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                showQuoteAlert('An error occurred. Please try again.');
+            })
+            .finally(() => {
+                submitBtn.innerHTML = originalHTML;
+                submitBtn.disabled = false;
+            });
+        });
+        
+        function updateOrderStatus(orderId, status) {
+            fetch('/admin/api/update-order-status', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    order_id: orderId,
+                    status: status
+                })
+            })
+            .then(response => response.json())
+            .then(result => {
+                if (result.success) {
+                    console.log('Order status updated successfully');
+                } else {
+                    console.error('Failed to update order status:', result.error);
+                    alert('Failed to update order status');
+                }
+            })
+            .catch(error => {
+                console.error('Error updating order status:', error);
+                alert('Error updating order status');
+            });
+        }
+        
+        function deleteUser(userId) {
+            if (confirm('Are you sure you want to delete this user? This action cannot be undone.')) {
+                fetch('/admin/api/delete-user', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ user_id: userId })
+                })
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        loadUsers();
+                        loadStats();
+                    } else {
+                        alert('Failed to delete user: ' + result.error);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error deleting user:', error);
+                    alert('Error deleting user');
+                });
+            }
+        }
+
+        function openViewQuoteModal(projectId) {
+            const modal = document.getElementById('viewQuoteModal');
+            const content = document.getElementById('viewQuoteContent');
+            content.innerHTML = '<div class="text-center py-8"><i class="fas fa-spinner fa-spin text-2xl"></i> Loading...</div>';
+            modal.classList.remove('hidden');
+            fetch(`/admin/api/project-details?project_id=${projectId}`)
+                .then(response => response.json())
+                .then(data => {
+                    if (!data.success) {
+                        content.innerHTML = `<div class='alert alert-error'>${data.error || 'Failed to load project details.'}</div>`;
+                        return;
+                    }
+                    const project = data.project;
+                    let filesHtml = '';
+                    if (project.files && project.files.length > 0) {
+                        filesHtml = `<ul class='list-disc pl-6 space-y-1'>` +
+                            project.files.map(f => `<li>${f.file_name} (${f.file_size} MB)</li>`).join('') +
+                            `</ul>`;
+                    } else {
+                        filesHtml = '<p class="text-gray-400">No files uploaded.</p>';
+                    }
+                    content.innerHTML = `
+                        <div class="mb-4">
+                            <p><span class="font-semibold">Project ID:</span> ${project.project_id}</p>
+                            <p><span class="font-semibold">Project Name:</span> ${project.project_name}</p>
+                            <p><span class="font-semibold">Client:</span> ${project.user_name}</p>
+                            <p><span class="font-semibold">Purpose:</span> ${project.purpose}</p>
+                            <p><span class="font-semibold">File Count:</span> ${project.file_count}</p>
+                            <p><span class="font-semibold">Submitted:</span> ${new Date(project.created_at).toLocaleString()}</p>
+                        </div>
+                        <div>
+                            <h4 class="font-semibold mb-2">Project Files</h4>
+                            ${filesHtml}
+                        </div>
+                    `;
+                })
+                .catch(error => {
+                    content.innerHTML = `<div class='alert alert-error'>Error loading project details.</div>`;
+                });
+        }
+        
+        function closeViewQuoteModal() {
+            document.getElementById('viewQuoteModal').classList.add('hidden');
+            document.getElementById('viewQuoteContent').innerHTML = '';
+        }
+    </script>
+</body>
+</html>
