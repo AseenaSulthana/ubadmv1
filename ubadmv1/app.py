@@ -14,10 +14,6 @@ create_tables()
 def index():
     return render_template('index.html')
 
-@app.route('/signin')
-def signin():
-    return render_template('signin.html')
-
 # Admin routes
 @app.route('/admin/signin')
 def admin_signin():
@@ -33,7 +29,35 @@ def admin_otp():
 
 @app.route('/admin/dashboard')
 def admin_dashboard():
-    return render_template('admin-dashboard.html')
+    # Check admin session and redirect based on role
+    session_id = session.get('admin_session_id')
+    if not session_id:
+        return redirect('/admin/signin')
+    
+    success, admin_data = admin_manager.verify_admin_session(session_id)
+    if not success:
+        return redirect('/admin/signin')
+    
+    # Redirect based on admin type
+    admin_type = admin_data.get('admin_type')
+    if admin_type == 'techadmin':
+        return redirect('/admin/tech-dashboard')
+    elif admin_type == 'support':
+        return redirect('/admin/support-dashboard')
+    else:
+        return render_template('admin-dashboard.html')
+
+@app.route('/admin/tech-dashboard')
+def tech_dashboard():
+    return render_template('tech-dashboard.html')
+
+@app.route('/admin/support-dashboard')
+def support_dashboard():
+    return render_template('support-dashboard.html')
+
+@app.route('/admin/controls')
+def admin_controls():
+    return render_template('admin-controls.html')
 
 # Admin API routes
 @app.route('/admin/signin', methods=['POST'])
@@ -55,6 +79,14 @@ def admin_signin_post():
         else:
             return jsonify({'success': False, 'error': message})
             
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/admin/api/available-types')
+def admin_api_available_types():
+    try:
+        available_types = admin_manager.get_available_admin_types()
+        return jsonify({'success': True, 'available_types': available_types})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
 
@@ -337,6 +369,103 @@ def admin_api_project_details():
         return jsonify({'success': False, 'error': error})
     return jsonify({'success': True, 'project': project})
 
+@app.route('/admin/api/quoted-projects')
+def admin_api_quoted_projects():
+    try:
+        session_id = session.get('admin_session_id')
+        if not session_id:
+            return jsonify({'error': 'Unauthorized'}), 401
+        
+        success, admin_data = admin_manager.verify_admin_session(session_id)
+        if not success:
+            return jsonify({'error': 'Unauthorized'}), 401
+        
+        quotes = admin_manager.get_quoted_projects()
+        return jsonify(quotes)
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/admin/api/paid-projects')
+def admin_api_paid_projects():
+    try:
+        session_id = session.get('admin_session_id')
+        if not session_id:
+            return jsonify({'error': 'Unauthorized'}), 401
+        
+        success, admin_data = admin_manager.verify_admin_session(session_id)
+        if not success:
+            return jsonify({'error': 'Unauthorized'}), 401
+        
+        paid_projects = admin_manager.get_paid_projects()
+        return jsonify(paid_projects)
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/admin/api/quote-details')
+def admin_api_quote_details():
+    try:
+        session_id = session.get('admin_session_id')
+        if not session_id:
+            return jsonify({'error': 'Unauthorized'}), 401
+        
+        success, admin_data = admin_manager.verify_admin_session(session_id)
+        if not success:
+            return jsonify({'error': 'Unauthorized'}), 401
+        
+        project_id = request.args.get('project_id')
+        if not project_id:
+            return jsonify({'success': False, 'error': 'Missing project_id'})
+        
+        quote_details = admin_manager.get_quote_details(project_id)
+        return jsonify(quote_details)
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/admin/api/project-files')
+def admin_api_project_files():
+    try:
+        session_id = session.get('admin_session_id')
+        if not session_id:
+            return jsonify({'error': 'Unauthorized'}), 401
+        
+        success, admin_data = admin_manager.verify_admin_session(session_id)
+        if not success:
+            return jsonify({'error': 'Unauthorized'}), 401
+        
+        project_id = request.args.get('project_id')
+        if not project_id:
+            return jsonify({'success': False, 'error': 'Missing project_id'})
+        
+        project_files = admin_manager.get_project_files(project_id)
+        return jsonify(project_files)
+        
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/admin/api/start-printing', methods=['POST'])
+def admin_api_start_printing():
+    try:
+        session_id = session.get('admin_session_id')
+        if not session_id:
+            return jsonify({'success': False, 'error': 'Unauthorized'}), 401
+        
+        success, admin_data = admin_manager.verify_admin_session(session_id)
+        if not success:
+            return jsonify({'success': False, 'error': 'Unauthorized'}), 401
+        
+        data = request.get_json()
+        project_id = data.get('project_id')
+        if not project_id:
+            return jsonify({'success': False, 'error': 'Project ID is required'})
+        
+        success, message = admin_manager.update_project_status(project_id, 'printing')
+        return jsonify({'success': success, 'error': None if success else message})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
 # Contact form API
 @app.route('/api/contact-message', methods=['POST'])
 def api_contact_message():
@@ -361,6 +490,96 @@ def api_contact_message():
         else:
             return jsonify({'success': False, 'error': 'Failed to send message'})
             
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/admin/api/payment-records')
+def admin_api_payment_records():
+    try:
+        session_id = session.get('admin_session_id')
+        if not session_id:
+            return jsonify({'error': 'Unauthorized'}), 401
+        success, admin_data = admin_manager.verify_admin_session(session_id)
+        if not success:
+            return jsonify({'error': 'Unauthorized'}), 401
+        payment_records = admin_manager.get_all_payment_records()
+        return jsonify(payment_records)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/admin/api/chart-data')
+def admin_api_chart_data():
+    try:
+        session_id = session.get('admin_session_id')
+        if not session_id:
+            return jsonify({'error': 'Unauthorized'}), 401
+        success, admin_data = admin_manager.verify_admin_session(session_id)
+        if not success:
+            return jsonify({'error': 'Unauthorized'}), 401
+
+        chart_data = admin_manager.get_chart_data()
+        return jsonify(chart_data)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/admin/api/all-admins')
+def admin_api_all_admins():
+    try:
+        session_id = session.get('admin_session_id')
+        if not session_id:
+            return jsonify({'error': 'Unauthorized'}), 401
+        
+        success, admin_data = admin_manager.verify_admin_session(session_id)
+        if not success or admin_data.get('admin_type') != 'superadmin':
+            return jsonify({'error': 'Unauthorized'}), 401
+        
+        admins = admin_manager.get_all_admins()
+        return jsonify(admins)
+    except Exception as e:
+        return jsonify({'error': str(e)}), 500
+
+@app.route('/admin/api/remove-admin', methods=['POST'])
+def admin_api_remove_admin():
+    try:
+        session_id = session.get('admin_session_id')
+        if not session_id:
+            return jsonify({'error': 'Unauthorized'}), 401
+        
+        success, admin_data = admin_manager.verify_admin_session(session_id)
+        if not success or admin_data.get('admin_type') != 'superadmin':
+            return jsonify({'error': 'Unauthorized'}), 401
+        
+        data = request.get_json()
+        admin_id = data.get('admin_id')
+        
+        if not admin_id:
+            return jsonify({'success': False, 'error': 'Admin ID is required'})
+        
+        success, message = admin_manager.remove_admin(admin_id)
+        return jsonify({'success': success, 'error': message if not success else None})
+    except Exception as e:
+        return jsonify({'success': False, 'error': str(e)})
+
+@app.route('/admin/api/reply-message', methods=['POST'])
+def admin_api_reply_message():
+    try:
+        session_id = session.get('admin_session_id')
+        if not session_id:
+            return jsonify({'error': 'Unauthorized'}), 401
+        
+        success, admin_data = admin_manager.verify_admin_session(session_id)
+        if not success:
+            return jsonify({'error': 'Unauthorized'}), 401
+        
+        data = request.get_json()
+        message_id = data.get('message_id')
+        reply_text = data.get('reply_text')
+        
+        if not message_id or not reply_text:
+            return jsonify({'success': False, 'error': 'Message ID and reply text are required'})
+        
+        success, message = admin_manager.reply_to_message(message_id, reply_text, admin_data)
+        return jsonify({'success': success, 'error': message if not success else None})
     except Exception as e:
         return jsonify({'success': False, 'error': str(e)})
 

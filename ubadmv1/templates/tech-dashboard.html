@@ -1,0 +1,355 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tech Admin Dashboard - Unbound3D</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #000000;
+        }
+        
+        .brand-3d {
+            color: #3b82f6;
+        }
+        
+        .sidebar {
+            background: #000000;
+            border-right: 1px solid #1f2937;
+        }
+        
+        .card {
+            background: rgba(17, 24, 39, 0.8);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(59, 130, 246, 0.2);
+        }
+        
+        .smooth-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .professional-btn {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border: 1px solid #3b82f6;
+            border-left: 4px solid #3b82f6;
+            color: white;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        
+        .professional-btn:hover {
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3);
+        }
+        
+        .nav-item {
+            background: transparent;
+            border: 1px solid transparent;
+            border-left: 4px solid transparent;
+            color: #9ca3af;
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            margin: 4px 0;
+        }
+        
+        .nav-item:hover {
+            background: rgba(59, 130, 246, 0.1);
+            border-color: rgba(59, 130, 246, 0.3);
+            border-left-color: #3b82f6;
+            color: white;
+        }
+        
+        .nav-item.active {
+            background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
+            border-color: #3b82f6;
+            border-left-color: #3b82f6;
+            color: white;
+        }
+        
+        .alert {
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            font-weight: 500;
+        }
+        
+        .alert-error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            color: #fca5a5;
+        }
+        
+        .alert-success {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #86efac;
+        }
+    </style>
+</head>
+<body class="bg-black text-white">
+    <div class="flex h-screen">
+        <!-- Sidebar -->
+        <div class="sidebar w-64 p-6">
+            <div class="mb-8">
+                <h1 class="text-2xl font-bold brand-3d">Unbound3D</h1>
+                <p class="text-gray-400 text-sm">Tech Admin Panel</p>
+            </div>
+            
+            <nav class="space-y-2">
+                <a href="#" class="nav-item active" onclick="showSection('dashboard')">
+                    <i class="fas fa-tachometer-alt"></i>
+                    <span>Dashboard</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('quotes')">
+                    <i class="fas fa-file-invoice"></i>
+                    <span>Quote Management</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('orders')">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span>Orders</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('users')">
+                    <i class="fas fa-users"></i>
+                    <span>Users</span>
+                </a>
+                <a href="#" class="nav-item" onclick="showSection('messages')">
+                    <i class="fas fa-envelope"></i>
+                    <span>Messages</span>
+                </a>
+            </nav>
+            
+            <div class="mt-auto pt-8">
+                <div class="flex items-center space-x-3 mb-4">
+                    <div class="w-10 h-10 bg-blue-600 rounded-full flex items-center justify-center">
+                        <i class="fas fa-user text-white"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium" id="adminName">Tech Admin</p>
+                        <p class="text-sm text-gray-400" id="adminType">techadmin</p>
+                    </div>
+                </div>
+                <button onclick="logout()" class="w-full professional-btn bg-red-600 border-red-500">
+                    <i class="fas fa-sign-out-alt"></i>
+                    Logout
+                </button>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="flex-1 p-8 overflow-y-auto">
+            <!-- Dashboard Section -->
+            <div id="dashboard" class="section">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold mb-2">Tech Admin Dashboard</h2>
+                    <p class="text-gray-400">Technical queries and project management</p>
+                </div>
+                
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8" id="statsCards">
+                    <!-- Stats will be loaded here -->
+                </div>
+                
+                <!-- Recent Activity -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                    <div class="card p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-4">Recent Quotes</h3>
+                        <div id="recentQuotes">
+                            <!-- Recent quotes will be loaded here -->
+                        </div>
+                    </div>
+                    
+                    <div class="card p-6 rounded-lg">
+                        <h3 class="text-xl font-bold mb-4">Active Jobs</h3>
+                        <div id="activeJobs">
+                            <!-- Active jobs will be loaded here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Other sections will be added here -->
+        </div>
+    </div>
+    
+    <script>
+        let currentAdmin = null;
+        
+        // Check authentication on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuth();
+        });
+        
+        function checkAuth() {
+            fetch('/admin/check-auth')
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        currentAdmin = result.admin;
+                        if (currentAdmin.admin_type !== 'techadmin') {
+                            window.location.href = '/admin/dashboard';
+                            return;
+                        }
+                        document.getElementById('adminName').textContent = result.admin.name;
+                        document.getElementById('adminType').textContent = result.admin.admin_type;
+                        loadDashboardData();
+                    } else {
+                        window.location.href = '/admin/signin';
+                    }
+                })
+                .catch(error => {
+                    console.error('Auth check failed:', error);
+                    window.location.href = '/admin/signin';
+                });
+        }
+        
+        function logout() {
+            fetch('/admin/logout', { method: 'POST' })
+                .then(() => {
+                    window.location.href = '/admin/signin';
+                })
+                .catch(error => {
+                    console.error('Logout failed:', error);
+                    window.location.href = '/admin/signin';
+                });
+        }
+        
+        function loadDashboardData() {
+            loadStats();
+            loadRecentQuotes();
+            loadActiveJobs();
+        }
+        
+        function loadStats() {
+            fetch('/admin/api/stats')
+                .then(response => response.json())
+                .then(stats => {
+                    const statsContainer = document.getElementById('statsCards');
+                    statsContainer.innerHTML = `
+                        <div class="card p-6 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-400 text-sm">Pending Quotes</p>
+                                    <p class="text-2xl font-bold">${stats.pending_quotes || 0}</p>
+                                </div>
+                                <div class="w-12 h-12 bg-yellow-600 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-file-invoice text-white"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card p-6 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-400 text-sm">Active Orders</p>
+                                    <p class="text-2xl font-bold">${stats.active_orders || 0}</p>
+                                </div>
+                                <div class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-shopping-cart text-white"></i>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card p-6 rounded-lg">
+                            <div class="flex items-center justify-between">
+                                <div>
+                                    <p class="text-gray-400 text-sm">Total Users</p>
+                                    <p class="text-2xl font-bold">${stats.total_users || 0}</p>
+                                </div>
+                                <div class="w-12 h-12 bg-green-600 rounded-lg flex items-center justify-center">
+                                    <i class="fas fa-users text-white"></i>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                })
+                .catch(error => console.error('Error loading stats:', error));
+        }
+        
+        function loadRecentQuotes() {
+            fetch('/admin/api/quoted-projects')
+                .then(response => response.json())
+                .then(quotes => {
+                    const container = document.getElementById('recentQuotes');
+                    if (quotes.length === 0) {
+                        container.innerHTML = '<p class="text-gray-400">No recent quotes</p>';
+                        return;
+                    }
+                    
+                    const recentQuotes = quotes.slice(0, 5);
+                    container.innerHTML = recentQuotes.map(quote => `
+                        <div class="border-b border-gray-700 py-3">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="font-medium">${quote.project_name}</p>
+                                    <p class="text-sm text-gray-400">${quote.user_name}</p>
+                                </div>
+                                <span class="text-green-400 font-medium">₹${quote.total_price}</span>
+                            </div>
+                        </div>
+                    `).join('');
+                })
+                .catch(error => console.error('Error loading recent quotes:', error));
+        }
+        
+        function loadActiveJobs() {
+            fetch('/admin/api/active-orders')
+                .then(response => response.json())
+                .then(orders => {
+                    const container = document.getElementById('activeJobs');
+                    if (orders.length === 0) {
+                        container.innerHTML = '<p class="text-gray-400">No active jobs</p>';
+                        return;
+                    }
+                    
+                    const activeJobs = orders.slice(0, 5);
+                    container.innerHTML = activeJobs.map(order => `
+                        <div class="border-b border-gray-700 py-3">
+                            <div class="flex justify-between items-start">
+                                <div>
+                                    <p class="font-medium">${order.project_name || 'N/A'}</p>
+                                    <p class="text-sm text-gray-400">${order.user_name}</p>
+                                </div>
+                                <span class="bg-blue-600 px-2 py-1 rounded text-xs">${order.order_status}</span>
+                            </div>
+                        </div>
+                    `).join('');
+                })
+                .catch(error => console.error('Error loading active jobs:', error));
+        }
+        
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Show selected section
+            document.getElementById(sectionName).classList.remove('hidden');
+            
+            // Update navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            event.target.closest('.nav-item').classList.add('active');
+        }
+    </script>
+</body>
+</html>

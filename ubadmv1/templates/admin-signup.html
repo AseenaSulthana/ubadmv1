@@ -109,7 +109,7 @@
             <p class="text-gray-400">Create an admin account</p>
             <p class="text-sm text-yellow-400 mt-2">
                 <i class="fas fa-info-circle mr-1"></i>
-                Only 2 admin accounts allowed: superadmin & techadmin
+                Only 3 admin accounts allowed: superadmin, techadmin & support
             </p>
         </div>
         
@@ -122,11 +122,14 @@
                     <label class="block text-sm font-medium mb-2 text-gray-300">Admin Type</label>
                     <select 
                         name="admin_type" 
+                        id="adminTypeSelect"
                         required 
                         class="select-field w-full px-4 py-3 rounded-lg text-white focus:outline-none"
                     >
                         <option value="">Select Admin Type</option>
                         <option value="superadmin">Super Admin</option>
+                        <option value="techadmin">Tech Admin</option>
+                        <option value="support">Support Admin</option>
                     </select>
                 </div>
                 
@@ -249,6 +252,42 @@
     </div>
     
     <script>
+        // Load available admin types on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            loadAvailableAdminTypes();
+        });
+        
+        function loadAvailableAdminTypes() {
+            fetch('/admin/api/available-types')
+                .then(response => response.json())
+                .then(result => {
+                    if (result.success) {
+                        updateAdminTypeOptions(result.available_types);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error loading admin types:', error);
+                });
+        }
+        
+        function updateAdminTypeOptions(availableTypes) {
+            const select = document.getElementById('adminTypeSelect');
+            const options = select.querySelectorAll('option');
+            
+            // Hide all admin type options except the default "Select Admin Type"
+            options.forEach(option => {
+                if (option.value !== '') {
+                    if (availableTypes.includes(option.value)) {
+                        option.style.display = '';
+                        option.disabled = false;
+                    } else {
+                        option.style.display = 'none';
+                        option.disabled = true;
+                    }
+                }
+            });
+        }
+        
         function togglePassword() {
             const passwordField = document.getElementById('password');
             const passwordIcon = document.getElementById('passwordIcon');

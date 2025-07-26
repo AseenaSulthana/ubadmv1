@@ -222,3 +222,39 @@ CREATE TABLE IF NOT EXISTS contact_messages (
     message TEXT NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
+-- Admins table
+CREATE TABLE IF NOT EXISTS admins (
+    admin_id INT AUTO_INCREMENT PRIMARY KEY,
+    admin_type ENUM('superadmin', 'techadmin', 'support') NOT NULL,
+    name VARCHAR(255) NOT NULL,
+    designation VARCHAR(255),
+    location VARCHAR(255),
+    mobile VARCHAR(20),
+    email VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Admin sessions table
+CREATE TABLE IF NOT EXISTS admin_sessions (
+    session_id VARCHAR(64) PRIMARY KEY,
+    admin_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    expires_at TIMESTAMP NOT NULL,
+    is_active BOOLEAN DEFAULT TRUE,
+    FOREIGN KEY (admin_id) REFERENCES admins(admin_id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- Admin OTP codes table
+CREATE TABLE IF NOT EXISTS admin_otp_codes (
+    otp_id INT AUTO_INCREMENT PRIMARY KEY,
+    email VARCHAR(255) NOT NULL,
+    otp_code VARCHAR(6) NOT NULL,
+    expires_at TIMESTAMP NOT NULL,
+    is_used BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_email_otp (email, otp_code)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;

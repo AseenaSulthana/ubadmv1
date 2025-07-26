@@ -613,6 +613,28 @@ def send_otp_email(email, otp, is_admin=False):
         logger.error(f"Error sending email to {email}: {e}")
         return False
 
+def send_email(email, subject, body, is_admin=False):
+    """Send general email."""
+    try:
+        msg = MIMEMultipart()
+        msg['From'] = EMAIL_CONFIG['email']
+        msg['To'] = email
+        msg['Subject'] = subject
+        
+        msg.attach(MIMEText(body, 'plain'))
+        
+        server = smtplib.SMTP(EMAIL_CONFIG['smtp_server'], EMAIL_CONFIG['smtp_port'])
+        server.starttls()
+        server.login(EMAIL_CONFIG['email'], EMAIL_CONFIG['password'])
+        server.sendmail(EMAIL_CONFIG['email'], email, msg.as_string())
+        server.quit()
+        
+        logger.info(f"Email sent to {email}")
+        return True
+    except Exception as e:
+        logger.error(f"Error sending email to {email}: {e}")
+        return False
+
 def send_quote_email(email, name, project_name, quote_price):
     """Send quote email to user."""
     try:
